@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uifry - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1d29;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #1e2139;
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 50px;
+            font-size: 22px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #8b92b2;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #6366f1;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            font-size: 18px;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 50px;
+            padding: 0 16px;
+        }
+
+        .dark-mode-label {
+            color: #8b92b2;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 26px;
+            background: #6366f1;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 30px;
+            background: #1a1d29;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header-left p {
+            color: #8b92b2;
+            font-size: 16px;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-bar {
+            background: #252a41;
+            border: 1px solid #2d3348;
+            border-radius: 12px;
+            padding: 12px 20px 12px 45px;
+            color: white;
+            width: 350px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-bar::placeholder {
+            color: #6b7280;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #252a41;
+            border-radius: 16px;
+            padding: 24px;
+            flex: 1;
+            position: relative;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .income-icon { background: #3b82f6; }
+        .outcome-icon { background: #8b5cf6; }
+
+        .stat-label {
+            color: #8b92b2;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .chart-section {
+            background: #252a41;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 30px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #8b92b2;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .income-dot { background: #3b82f6; }
+        .outcome-dot { background: #8b5cf6; }
+
+        .chart-filters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .filter-select {
+            background: #1a1d29;
+            border: 1px solid #2d3348;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chart-area {
+            height: 300px;
+            background: #1a1d29;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            gap: 15px;
+        }
+
+        .chart-month {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .bars-container {
+            display: flex;
+            align-items: end;
+            gap: 4px;
+            height: 200px;
+        }
+
+        .chart-bar {
+            width: 16px;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .income-bar { background: #3b82f6; }
+        .outcome-bar { background: #8b5cf6; }
+
+        .month-label {
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .right-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .card-section {
+            background: #252a41;
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            color: #8b92b2;
+            font-size: 14px;
+        }
+
+        .card-balance {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .credit-card {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .credit-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20px;
+            width: 100px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            transform: rotate(45deg);
+        }
+
+        .card-balance-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .card-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .card-number {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: white;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .card-date {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .card-logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .primary-btn {
+            background: #6366f1;
+            color: white;
+        }
+
+        .secondary-btn {
+            background: #2d3348;
+            color: white;
+        }
+
+        .activity-section .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .month-select {
+            background: #1a1d29;
+            border: 1px solid #2d3348;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .activity-chart {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 160px;
+            position: relative;
+        }
+
+        .donut-chart {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #6366f1 0deg 270deg,
+                #3b82f6 270deg 324deg,
+                #2d3348 324deg 360deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .donut-chart::before {
+            content: '';
+            width: 80px;
+            height: 80px;
+            background: #252a41;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .chart-percentage {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            z-index: 1;
+        }
+
+        .activity-legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .legend-item-full {
+            text-align: center;
+        }
+
+        .legend-dot-large {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+        }
+
+        .legend-label {
+            font-size: 12px;
+            color: #8b92b2;
+            margin-bottom: 4px;
+        }
+
+        .legend-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .view-all-btn {
+            background: none;
+            border: none;
+            color: #6366f1;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .transactions-section {
+            background: #252a41;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .search-filter {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-input {
+            background: #1a1d29;
+            border: 1px solid #2d3348;
+            border-radius: 8px;
+            padding: 8px 35px 8px 12px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transactions-table th {
+            text-align: left;
+            padding: 16px 0;
+            color: #8b92b2;
+            font-weight: 500;
+            font-size: 14px;
+            border-bottom: 1px solid #2d3348;
+        }
+
+        .transactions-table td {
+            padding: 20px 0;
+            border-bottom: 1px solid #2d3348;
+        }
+
+        .transaction-row:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .transaction-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .transaction-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            color: white;
+        }
+
+        .avatar-ae { background: #3b82f6; }
+        .avatar-md { background: #fbbf24; }
+        .avatar-lv { background: #ef4444; }
+
+        .transaction-company {
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .transaction-title {
+            font-size: 12px;
+            color: #8b92b2;
+            margin-top: 2px;
+        }
+
+        .transaction-date {
+            color: #8b92b2;
+            font-size: 14px;
+        }
+
+        .transaction-amount {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-succeeded { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            margin-top: 40px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: #8b92b2;
+        }
+
+        .chevron-icon {
+            margin-left: auto;
+            color: #8b92b2;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">◐</div>
+            <span>uifry</span>
+        </div>
+        
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <span class="nav-icon">⊞</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">💼</span>
+                        <span>My Wallet</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">👤</span>
+                        <span>Accounts</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">🛡️</span>
+                        <span>Security</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon">❓</span>
+                        <span>Help Centre</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="toggle-container">
+            <span class="dark-mode-label">Dark Mode</span>
+            <div class="toggle-switch"></div>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar">AR</div>
+            <div class="user-info">
+                <h4>Ali Riaz</h4>
+                <p>Web Developer</p>
+            </div>
+            <span class="chevron-icon">⌄</span>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>Welcome Back, Ali 👋</h1>
+                <p>Here's what's happening with your store today.</p>
+            </div>
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-bar" placeholder="Search for anything...">
+            </div>
+        </header>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon income-icon">↗</div>
+                    <span class="stat-label">Total Income</span>
+                </div>
+                <div class="stat-value">$632.000</div>
+                <div class="stat-change positive">+12%</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon outcome-icon">↙</div>
+                    <span class="stat-label">Total Outcome</span>
+                </div>
+                <div class="stat-value">$632.000</div>
+                <div class="stat-change negative">-12%</div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h3 class="chart-title">Analytics</h3>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot income-dot"></div>
+                            <span>Income</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot outcome-dot"></div>
+                            <span>Outcome</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-filters">
+                    <select class="filter-select">
+                        <option>2020</option>
+                        <option>2021</option>
+                        <option>2022</option>
+                    </select>
+                </div>
+
+                <div class="chart-area">
+                    <div class="chart-month">
+                        <div class="bars-container">
+                            <div class="chart-bar income-bar" style="height: 60%;"></div>
+                            <div class="chart-bar outcome-bar" style="height: 80%;"></div>
+                        </div>
+                        <span class="month-label">Jan</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="bars-container">
+                            <div class="chart-bar income-bar" style="height: 90%;"></div>
+                            <div class="chart-bar outcome-bar" style="height: 70%;"></div>
+                        </div>
+                        <span class="month-label">Feb</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="bars-container">
+                            <div class="chart-bar income-bar" style="height: 75%;"></div>
+                            <div class="chart-bar outcome-bar" style="height: 85%;"></div>
+                        </div>
+                        <span class="month-label">Mar</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="bars-container">
+                            <div class="chart-bar income-bar" style="height: 95%;"></div>
+                            <div class="chart-bar outcome-bar" style="height: 90%;"></div>
+                        </div>
+                        <span class="month-label">Apr</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="bars-container">
+                            <div class="chart-bar income-bar" style="height: 85%;"></div>
+                            <div class="chart-bar outcome-bar" style="height: 95%;"></div>
+                        </div>
+                        <span class="month-label">May</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="bars-container">
+                            <div class="chart-bar income-bar" style="height: 70%;"></div>
+                            <div class="chart-bar outcome-bar" style="height: 75%;"></div>
+                        </div>
+                        <span class="month-label">Jun</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="bars-container">
+                            <div class="chart-bar income-bar" style="height: 100%;"></div>
+                            <div class="chart-bar outcome-bar" style="height: 80%;"></div>
+                        </div>
+                        <span class="month-label">Jul</span>
+                    </div>
+                    <div class="chart-month">
+                        <div class="bars-container">
+                            <div class="chart-bar income-bar" style="height: 65%;"></div>
+                            <div class="chart-bar outcome-bar" style="height: 85%;"></div>
+                        </div>
+                        <span class="month-label">Aug</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-sidebar">
+                <div class="card-section">
+                    <div class="card-header">
+                        <h3 class="card-title">My Card</h3>
+                        <p class="card-subtitle">Card Balance</p>
+                    </div>
+                    <div class="card-balance">$15.595.015</div>
+                    
+                    <div class="credit-card">
+                        <div class="card-logo">MC</div>
+                        <div class="card-balance-text">Current Balance</div>
+                        <div class="card-amount">$5,750.20</div>
+                        <div class="card-number">5282 3456 7890 1289</div>
+                        <div class="card-date">09/25</div>
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="action-btn primary-btn">Manage Cards</button>
+                        <button class="action-btn secondary-btn">Transfer</button>
+                    </div>
+                </div>
+
+                <div class="card-section activity-section">
+                    <div class="card-header">
+                        <h3 class="card-title">Activity</h3>
+                        <select class="month-select">
+                            <option>Month</option>
+                        </select>
+                    </div>
+
+                    <div class="activity-chart">
+                        <div class="donut-chart">
+                            <span class="chart-percentage">75%</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-legend">
+                        <div class="legend-item-full">
+                            <div class="legend-dot-large income-dot"></div>
+                            <div class="legend-label">Daily payment</div>
+                            <div class="legend-value">55%</div>
+                        </div>
+                        <div class="legend-item-full">
+                            <div class="legend-dot-large" style="background: #3b82f6;"></div>
+                            <div class="legend-label">Hobby</div>
+                            <div class="legend-value">20%</div>
+                        </div>
+                    </div>
+
+                    <button class="view-all-btn">
+                        View all activity →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="transactions-section">
+            <div class="section-header">
+                <h3 class="section-title">Transaction</h3>
+                <div class="search-filter">
+                    <input type="text" class="filter-input" placeholder="Search for anything...">
+                    <select class="filter-select">
+                        <option>10 May - 20 May</option>
+                    </select>
+                </div>
+            </div>
+
+            <table class="transactions-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="transaction-row">
+                        <td>
+                            <div class="transaction-name">
+                                <div class="transaction-avatar avatar-ae">AE</div>
+                                <div>
+                                    <div class="transaction-company">Adobe After Effect</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="transaction-date">Sat, 20 Apr 2020</td>
+                        <td class="transaction-amount">$80.09</td>
+                        <td><span class="status-badge status-succeeded">Succeeded</span></td>
+                    </tr>
+                    <tr class="transaction-row">
+                        <td>
+                            <div class="transaction-name">
+                                <div class="transaction-avatar avatar-md">M</div>
+                                <div>
+                                    <div class="transaction-company">Mcdonald's</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="transaction-date">Fri, 19 Apr 2020</td>
+                        <td class="transaction-amount">$7.03</td>
+                        <td><span class="status-badge status-succeeded">Succeeded</span></td>
+                    </tr>
+                    <tr class="transaction-row">
+                        <td>
+                            <div class="transaction-name">
+                                <div class="transaction-avatar avatar-lv">L</div>
+                                <div>
+                                    <div class="transaction-company">Levi's</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="transaction-date">Tue, 19 Apr 2020</td>
+                        <td class="transaction-amount">$30.09</td>
+                        <td><span class="status-badge status-succeeded">Succeeded</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // Toggle functionality
+        document.querySelector('.toggle-switch').
