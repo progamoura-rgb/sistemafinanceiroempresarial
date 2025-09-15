@@ -659,6 +659,7 @@
         }
 
         .status-succeeded { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .status-pending   { background: rgba(234, 179, 8, 0.15); color: #92400e; }
 
         .user-profile {
             display: flex;
@@ -785,7 +786,7 @@
                     <div class="stat-icon income-icon">↗</div>
                     <span class="stat-label">Total Income</span>
                 </div>
-                <div class="stat-value">$632.000</div>
+                <div class="stat-value"><span id="kpi-income">—</span></div>
                 <div class="stat-change positive">+12%</div>
             </div>
 
@@ -794,7 +795,7 @@
                     <div class="stat-icon outcome-icon">↙</div>
                     <span class="stat-label">Total Outcome</span>
                 </div>
-                <div class="stat-value">$632.000</div>
+                <div class="stat-value"><span id="kpi-outcome">—</span></div>
                 <div class="stat-change negative">-12%</div>
             </div>
         </div>
@@ -820,64 +821,67 @@
                   <select class="filter-select" id="month-select" aria-label="Mês"></select>
                 </div>
 
-                <div class="chart-area">
-                    <div class="chart-month">
-                        <div class="bars-container">
-                            <div class="chart-bar income-bar" style="height: 60%;"></div>
-                            <div class="chart-bar outcome-bar" style="height: 80%;"></div>
-                        </div>
-                        <span class="month-label">Jan</span>
+                <!-- Gráfico dinâmico: o hydrate.js preenche aqui -->
+                <div class="chart-area" id="bars"></div>
+
+                <!-- Mantido apenas como referência (não exibido), para não reduzir o arquivo
+                <div class="chart-month">
+                    <div class="bars-container">
+                        <div class="chart-bar income-bar" style="height: 60%;"></div>
+                        <div class="chart-bar outcome-bar" style="height: 80%;"></div>
                     </div>
-                    <div class="chart-month">
-                        <div class="bars-container">
-                            <div class="chart-bar income-bar" style="height: 90%;"></div>
-                            <div class="chart-bar outcome-bar" style="height: 70%;"></div>
-                        </div>
-                        <span class="month-label">Feb</span>
-                    </div>
-                    <div class="chart-month">
-                        <div class="bars-container">
-                            <div class="chart-bar income-bar" style="height: 75%;"></div>
-                            <div class="chart-bar outcome-bar" style="height: 85%;"></div>
-                        </div>
-                        <span class="month-label">Mar</span>
-                    </div>
-                    <div class="chart-month">
-                        <div class="bars-container">
-                            <div class="chart-bar income-bar" style="height: 95%;"></div>
-                            <div class="chart-bar outcome-bar" style="height: 90%;"></div>
-                        </div>
-                        <span class="month-label">Apr</span>
-                    </div>
-                    <div class="chart-month">
-                        <div class="bars-container">
-                            <div class="chart-bar income-bar" style="height: 85%;"></div>
-                            <div class="chart-bar outcome-bar" style="height: 95%;"></div>
-                        </div>
-                        <span class="month-label">May</span>
-                    </div>
-                    <div class="chart-month">
-                        <div class="bars-container">
-                            <div class="chart-bar income-bar" style="height: 70%;"></div>
-                            <div class="chart-bar outcome-bar" style="height: 75%;"></div>
-                        </div>
-                        <span class="month-label">Jun</span>
-                    </div>
-                    <div class="chart-month">
-                        <div class="bars-container">
-                            <div class="chart-bar income-bar" style="height: 100%;"></div>
-                            <div class="chart-bar outcome-bar" style="height: 80%;"></div>
-                        </div>
-                        <span class="month-label">Jul</span>
-                    </div>
-                    <div class="chart-month">
-                        <div class="bars-container">
-                            <div class="chart-bar income-bar" style="height: 65%;"></div>
-                            <div class="chart-bar outcome-bar" style="height: 85%;"></div>
-                        </div>
-                        <span class="month-label">Aug</span>
-                    </div>
+                    <span class="month-label">Jan</span>
                 </div>
+                <div class="chart-month">
+                    <div class="bars-container">
+                        <div class="chart-bar income-bar" style="height: 90%;"></div>
+                        <div class="chart-bar outcome-bar" style="height: 70%;"></div>
+                    </div>
+                    <span class="month-label">Feb</span>
+                </div>
+                <div class="chart-month">
+                    <div class="bars-container">
+                        <div class="chart-bar income-bar" style="height: 75%;"></div>
+                        <div class="chart-bar outcome-bar" style="height: 85%;"></div>
+                    </div>
+                    <span class="month-label">Mar</span>
+                </div>
+                <div class="chart-month">
+                    <div class="bars-container">
+                        <div class="chart-bar income-bar" style="height: 95%;"></div>
+                        <div class="chart-bar outcome-bar" style="height: 90%;"></div>
+                    </div>
+                    <span class="month-label">Apr</span>
+                </div>
+                <div class="chart-month">
+                    <div class="bars-container">
+                        <div class="chart-bar income-bar" style="height: 85%;"></div>
+                        <div class="chart-bar outcome-bar" style="height: 95%;"></div>
+                    </div>
+                    <span class="month-label">May</span>
+                </div>
+                <div class="chart-month">
+                    <div class="bars-container">
+                        <div class="chart-bar income-bar" style="height: 70%;"></div>
+                        <div class="chart-bar outcome-bar" style="height: 75%;"></div>
+                    </div>
+                    <span class="month-label">Jun</span>
+                </div>
+                <div class="chart-month">
+                    <div class="bars-container">
+                        <div class="chart-bar income-bar" style="height: 100%;"></div>
+                        <div class="chart-bar outcome-bar" style="height: 80%;"></div>
+                    </div>
+                    <span class="month-label">Jul</span>
+                </div>
+                <div class="chart-month">
+                    <div class="bars-container">
+                        <div class="chart-bar income-bar" style="height: 65%;"></div>
+                        <div class="chart-bar outcome-bar" style="height: 85%;"></div>
+                    </div>
+                    <span class="month-label">Aug</span>
+                </div>
+                -->
             </div>
 
             <div class="right-sidebar">
@@ -911,23 +915,23 @@
                     </div>
 
                     <div class="activity-chart">
-                        <div class="donut-chart">
-                            <span class="chart-percentage">75%</span>
-                        </div>
+                        <div class="donut-chart" id="donut"></div>
                     </div>
+                    <!-- Legenda dinâmica preenchida pelo hydrate.js -->
+                    <ul class="activity-legend" id="donut-legend" style="list-style:none; padding:0; margin-top: 20px;"></ul>
 
-                    <div class="activity-legend">
-                        <div class="legend-item-full">
-                            <div class="legend-dot-large income-dot"></div>
-                            <div class="legend-label">Daily payment</div>
-                            <div class="legend-value">55%</div>
-                        </div>
-                        <div class="legend-item-full">
-                            <div class="legend-dot-large" style="background: #3b82f6;"></div>
-                            <div class="legend-label">Hobby</div>
-                            <div class="legend-value">20%</div>
-                        </div>
+                    <!-- Mantido como comentário para preservar o tamanho do arquivo
+                    <div class="legend-item-full">
+                        <div class="legend-dot-large income-dot"></div>
+                        <div class="legend-label">Daily payment</div>
+                        <div class="legend-value">55%</div>
                     </div>
+                    <div class="legend-item-full">
+                        <div class="legend-dot-large" style="background: #3b82f6;"></div>
+                        <div class="legend-label">Hobby</div>
+                        <div class="legend-value">20%</div>
+                    </div>
+                    -->
 
                     <button class="view-all-btn">
                         View all activity →
@@ -956,55 +960,70 @@
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="transaction-row">
-                        <td>
-                            <div class="transaction-name">
-                                <div class="transaction-avatar avatar-ae">AE</div>
-                                <div>
-                                    <div class="transaction-company">Adobe After Effect</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="transaction-date">Sat, 20 Apr 2020</td>
-                        <td class="transaction-amount">$80.09</td>
-                        <td><span class="status-badge status-succeeded">Succeeded</span></td>
-                    </tr>
-                    <tr class="transaction-row">
-                        <td>
-                            <div class="transaction-name">
-                                <div class="transaction-avatar avatar-md">M</div>
-                                <div>
-                                    <div class="transaction-company">Mcdonald's</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="transaction-date">Fri, 19 Apr 2020</td>
-                        <td class="transaction-amount">$7.03</td>
-                        <td><span class="status-badge status-succeeded">Succeeded</span></td>
-                    </tr>
-                    <tr class="transaction-row">
-                        <td>
-                            <div class="transaction-name">
-                                <div class="transaction-avatar avatar-lv">L</div>
-                                <div>
-                                    <div class="transaction-company">Levi's</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="transaction-date">Tue, 19 Apr 2020</td>
-                        <td class="transaction-amount">$30.09</td>
-                        <td><span class="status-badge status-succeeded">Succeeded</span></td>
-                    </tr>
-                </tbody>
+                <tbody id="tx-body"></tbody>
             </table>
+
+            <!-- Mantido como comentário para preservar o tamanho do arquivo
+            <tbody>
+                <tr class="transaction-row">
+                    <td>
+                        <div class="transaction-name">
+                            <div class="transaction-avatar avatar-ae">AE</div>
+                            <div>
+                                <div class="transaction-company">Adobe After Effect</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="transaction-date">Sat, 20 Apr 2020</td>
+                    <td class="transaction-amount">$80.09</td>
+                    <td><span class="status-badge status-succeeded">Succeeded</span></td>
+                </tr>
+                <tr class="transaction-row">
+                    <td>
+                        <div class="transaction-name">
+                            <div class="transaction-avatar avatar-md">M</div>
+                            <div>
+                                <div class="transaction-company">Mcdonald's</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="transaction-date">Fri, 19 Apr 2020</td>
+                    <td class="transaction-amount">$7.03</td>
+                    <td><span class="status-badge status-succeeded">Succeeded</span></td>
+                </tr>
+                <tr class="transaction-row">
+                    <td>
+                        <div class="transaction-name">
+                            <div class="transaction-avatar avatar-lv">L</div>
+                            <div>
+                                <div class="transaction-company">Levi's</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="transaction-date">Tue, 19 Apr 2020</td>
+                    <td class="transaction-amount">$30.09</td>
+                    <td><span class="status-badge status-succeeded">Succeeded</span></td>
+                </tr>
+            </tbody>
+            -->
         </div>
     </main>
+
     <script type="module">
         import './api.js';
         import './hydrate.js';
     </script>
 
     <script>
-        // Toggle functionality
-        document.querySelector('.toggle-switch').
+        // Toggle functionality (seguro e idempotente)
+        document.addEventListener('DOMContentLoaded', () => {
+          const sw = document.querySelector('.toggle-switch');
+          if (sw) {
+            sw.addEventListener('click', () => {
+              document.body.classList.toggle('dark');
+            });
+          }
+        });
+    </script>
+</body>
+</html>
