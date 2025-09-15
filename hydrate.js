@@ -139,27 +139,82 @@ function donutColor(i) {
   return palette[i % palette.length];
 }
 
-/* ---------- Transações ---------- */
+/* ---------- Transações (com classes e avatar dinâmico) ---------- */
 function renderTx(rows) {
   const tb = els.txBody();
   if (!tb) return;
   tb.innerHTML = '';
+
   rows.forEach(r => {
     const tr = document.createElement('tr');
-    const tdName = document.createElement('td'); tdName.textContent = r.name;
-    const tdDate = document.createElement('td'); tdDate.textContent = r.date; tdDate.style.textAlign = 'center';
-    const tdAmount = document.createElement('td'); tdAmount.textContent = r.amountFmt; tdAmount.style.textAlign = 'right';
+    tr.className = 'transaction-row';
+
+    // ===== Coluna: Name
+    const tdName = document.createElement('td');
+    tdName.className = 'transaction-name-cell';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'transaction-name';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'transaction-avatar';
+    avatar.textContent = initials(r.name);
+    avatar.style.background = pickColor(r.category || r.name);
+
+    const info = document.createElement('div');
+    const company = document.createElement('div');
+    company.className = 'transaction-company';
+    company.textContent = r.name;
+    info.appendChild(company);
+
+    wrap.appendChild(avatar);
+    wrap.appendChild(info);
+    tdName.appendChild(wrap);
+
+    // ===== Coluna: Date
+    const tdDate = document.createElement('td');
+    tdDate.className = 'transaction-date';
+    tdDate.textContent = r.date;
+    tdDate.style.textAlign = 'center';
+
+    // ===== Coluna: Amount
+    const tdAmount = document.createElement('td');
+    tdAmount.className = 'transaction-amount';
+    tdAmount.textContent = r.amountFmt;
+    tdAmount.style.textAlign = 'right';
+
+    // ===== Coluna: Status
     const tdStatus = document.createElement('td');
     const st = document.createElement('span');
-    st.textContent = r.status === 'Succeeded' ? 'Succeeded' : 'Pending';
-    st.style.padding = '2px 8px'; st.style.borderRadius = '999px'; st.style.fontSize = '12px';
-    st.style.background = r.status === 'Succeeded' ? 'rgba(16,185,129,.15)' : 'rgba(234,179,8,.15)';
-    st.style.color = r.status === 'Succeeded' ? '#065f46' : '#92400e';
+    const succeeded = r.status === 'Succeeded';
+    st.className = 'status-badge ' + (succeeded ? 'status-succeeded' : 'status-pending');
+    st.textContent = succeeded ? 'Succeeded' : 'Pending';
     tdStatus.appendChild(st);
-    tr.appendChild(tdName); tr.appendChild(tdDate); tr.appendChild(tdAmount); tr.appendChild(tdStatus);
+
+    tr.appendChild(tdName);
+    tr.appendChild(tdDate);
+    tr.appendChild(tdAmount);
+    tr.appendChild(tdStatus);
+
     tb.appendChild(tr);
   });
 }
+
+// ===== Helpers locais =====
+function initials(name) {
+  const s = String(name || '').trim();
+  if (!s) return '—';
+  const parts = s.split(/\s+/).slice(0, 2);
+  return parts.map(p => p[0]).join('').toUpperCase();
+}
+
+function pickColor(key) {
+  const palette = ['#3b82f6', '#fbbf24', '#ef4444', '#10b981', '#8b5cf6', '#06b6d4'];
+  let h = 0; const str = String(key || '');
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  return palette[h % palette.length];
+}
+
 
 /* ---------- Filtros (ano/mês) ---------- */
 function ensureFilters() {
