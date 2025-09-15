@@ -7,13 +7,13 @@ export async function loadDashboard({ ano, mes = 0, limit = 25 } = {}) {
   if (mes && Number(mes) > 0) url.searchParams.set('mes', String(mes));
   url.searchParams.set('limit', String(limit));
 
-  // tenta fetch normal (CORS)
+  // Tenta CORS normal
   try {
     const r = await fetch(url.toString(), { method: 'GET', mode: 'cors' });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     return await r.json();
-  } catch {
-    // fallback JSONP
+  } catch (err) {
+    // Fallback JSONP
     return jsonp(url);
   }
 }
@@ -27,6 +27,6 @@ function jsonp(urlObj) {
     s.onerror = () => { cleanup(); reject(new Error('JSONP failed')); };
     s.src = urlObj.toString();
     document.head.appendChild(s);
-    function cleanup() { try { delete window[cb]; } catch{} try { s.remove(); } catch{} }
+    function cleanup() { try { delete window[cb]; } catch {} try { s.remove(); } catch {} }
   });
 }
